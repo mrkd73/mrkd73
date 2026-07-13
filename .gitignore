@@ -1,0 +1,8 @@
+# WordPress core + generated site (downloaded by `make setup` / update script)
+/wordpress/
+
+# Local environment overrides
+.env
+
+# Logs
+*.log
