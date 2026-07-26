@@ -9,7 +9,12 @@ const { MongoClient } = require('../auth-gateway/node_modules/mongodb');
 const MONGO_URL =
   process.env.MONGO_URL ||
   'mongodb://127.0.0.1:27017/rocketchat?replicaSet=rs0&directConnection=true';
-const AUTH_BASE = (process.env.TG_AUTH_BASE || 'http://127.0.0.1:3001').replace(/\/$/, '');
+// Allow empty string for same-origin (/tg-auth via combine-proxy)
+const AUTH_BASE = (
+  Object.prototype.hasOwnProperty.call(process.env, 'TG_AUTH_BASE')
+    ? process.env.TG_AUTH_BASE
+    : 'http://127.0.0.1:3001'
+).replace(/\/$/, '');
 
 const publicDir = path.join(__dirname, '../auth-gateway/public');
 const css = fs.readFileSync(path.join(publicDir, 'app.css'), 'utf8');

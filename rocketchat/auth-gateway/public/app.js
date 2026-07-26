@@ -2,8 +2,11 @@
   if (window.__tgPhoneAuth) return;
   window.__tgPhoneAuth = true;
 
-  // Auth API base (local default :3001). Override with window.__TG_AUTH_BASE__ if needed.
-  var API_BASE = (window.__TG_AUTH_BASE__ || 'http://127.0.0.1:3001').replace(/\/$/, '');
+  // Auth API base. Empty string = same origin (/tg-auth via combine-proxy).
+  // Override with window.__TG_AUTH_BASE__ (deploy-auth-ui sets this).
+  var API_BASE = (typeof window.__TG_AUTH_BASE__ === 'string'
+    ? window.__TG_AUTH_BASE__
+    : 'http://127.0.0.1:3001').replace(/\/$/, '');
 
   var state = {
     phone: '',
