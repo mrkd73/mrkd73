@@ -1,0 +1,16 @@
+{
+  "name": "tg-auth-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Telegram-like phone OTP auth gateway for Rocket.Chat",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "deploy-ui": "node ../scripts/deploy-auth-ui.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongodb": "^6.12.0",
+    "node-fetch": "^2.7.0"
+  }
+}

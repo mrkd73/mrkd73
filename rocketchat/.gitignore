@@ -1,0 +1,7 @@
+auth-gateway/node_modules/
+*.log
+public-url.txt
+tunnel.log
+login-before.png
+login-after.png
+shot.log
