@@ -1,0 +1,2480 @@
+/* فاز صفر: fidelity به Telegram Web/Desktop */
+
+:root {
+	--wpa-blue: #3390ec;
+	--wpa-blue-deep: #2b7fd4;
+	--wpa-sidebar-bg: #ffffff;
+	--wpa-sidebar-border: #dfe3e6;
+	--wpa-search-bg: #f4f4f5;
+	--wpa-hover: rgba(0, 0, 0, 0.05);
+	--wpa-active-chat: #3390ec;
+	--wpa-text: #0e1621;
+	--wpa-text-muted: #707579;
+	--wpa-topbar-bg: #ffffff;
+	--wpa-composer-bg: #ffffff;
+	--wpa-incoming: #ffffff;
+	--wpa-outgoing: #eeffde;
+	--wpa-outgoing-meta: #4fae4e;
+	--wpa-shadow: 0 1px 2px rgba(16, 35, 47, 0.16);
+	--wpa-radius-bubble: 14px;
+	--wpa-font: "IRANSans", "Tahoma", sans-serif;
+	--wpa-sidebar-w: 420px;
+	--wpa-transition: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	--wpa-chat-bg: #8ca0b3;
+}
+
+.wpa-app,
+.wpa-app * { box-sizing: border-box; }
+
+.wpa-app {
+	position: relative;
+	display: flex;
+	width: 100%;
+	max-width: 100%;
+	height: calc(100vh - 32px);
+	height: calc(100dvh - 32px);
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+	overflow: hidden;
+	font-family: var(--wpa-font) !important;
+	font-size: 14px;
+	line-height: 1.35;
+	color: var(--wpa-text);
+	background: #fff;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* پیشخوان وردپرس font را روی دکمه/اینپوت/منو override می‌کند — همهٔ UI چت یکدست باشد */
+.wpa-app button,
+.wpa-app input,
+.wpa-app select,
+.wpa-app textarea,
+.wpa-app optgroup,
+.wpa-app option,
+.wpa-app label,
+.wpa-app .wpa-tg-input,
+.wpa-app .wpa-field__control,
+.wpa-app .wpa-tools-row,
+.wpa-app .wpa-tools-row__title,
+.wpa-app .wpa-tools-row__sub,
+.wpa-app .wpa-settings-item,
+.wpa-app .wpa-chat-item,
+.wpa-app .wpa-bubble,
+.wpa-app .wpa-bubble__text,
+.wpa-app .wpa-pop-menu__item,
+.wpa-app .wpa-btn-primary,
+.wpa-app .wpa-btn-secondary,
+.wpa-app .wpa-composer__input,
+.wpa-app .wpa-search__input,
+.wpa-app .wpa-msg-search__input,
+.wpa-app .wpa-topbar__title,
+.wpa-app .wpa-topbar__status,
+.wpa-app .wpa-credit-card,
+.wpa-app .wpa-settings__title,
+.wpa-app .wpa-settings__hint {
+	font-family: var(--wpa-font) !important;
+}
+
+/* با جمع شدن منوی WP کلاس folded روی body می‌آید؛ عرض از #wpcontent می‌آید و چت فیت می‌ماند */
+body.folded .wpa-app,
+body.auto-fold .wpa-app {
+	max-width: 100%;
+}
+
+.wpa-back { display: none; }
+
+@media screen and (max-width: 782px) {
+	.wpa-app {
+		height: calc(100vh - 46px);
+		height: calc(100dvh - 46px);
+	}
+}
+
+/* —— Sidebar —— */
+.wpa-sidebar {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: min(var(--wpa-sidebar-w), 38%);
+	min-width: 300px;
+	max-width: 480px;
+	background: var(--wpa-sidebar-bg);
+	border-left: 1px solid var(--wpa-sidebar-border);
+	z-index: 2;
+}
+
+.wpa-sidebar__header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 10px 10px;
+	min-height: 56px;
+}
+
+.wpa-search { position: relative; flex: 1; }
+
+.wpa-search__icon {
+	position: absolute;
+	top: 50%;
+	right: 12px;
+	transform: translateY(-50%);
+	color: var(--wpa-text-muted);
+	pointer-events: none;
+}
+
+.wpa-search__input {
+	width: 100%;
+	height: 42px;
+	padding: 0 42px 0 16px;
+	border: 0;
+	border-radius: 22px;
+	background: var(--wpa-search-bg);
+	color: var(--wpa-text);
+	font: inherit;
+	outline: none;
+	transition: background var(--wpa-transition), box-shadow var(--wpa-transition);
+}
+
+.wpa-search__input:focus {
+	background: #fff;
+	box-shadow: inset 0 0 0 2px rgba(51, 144, 236, 0.35);
+}
+
+.wpa-search__input::placeholder { color: #a2acb4; }
+
+.wpa-icon-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 42px;
+	height: 42px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: #707579;
+	cursor: pointer;
+	transition: background var(--wpa-transition), color var(--wpa-transition), transform var(--wpa-transition);
+}
+
+.wpa-icon-btn:hover { background: var(--wpa-hover); color: #4a4a4a; }
+.wpa-icon-btn:active { transform: scale(0.94); }
+
+.wpa-chat-list {
+	flex: 1;
+	overflow-y: auto;
+	padding: 4px 0 88px;
+}
+
+.wpa-chat-item {
+	display: flex;
+	width: 100%;
+	gap: 12px;
+	padding: 9px 12px;
+	border: 0;
+	background: transparent;
+	text-align: right;
+	cursor: pointer;
+	transition: background var(--wpa-transition);
+}
+
+.wpa-chat-item:hover { background: var(--wpa-hover); }
+.wpa-chat-item.is-active { background: var(--wpa-active-chat); }
+
+.wpa-chat-item.is-active .wpa-chat-item__title,
+.wpa-chat-item.is-active .wpa-chat-item__time,
+.wpa-chat-item.is-active .wpa-chat-item__preview { color: #fff; }
+
+.wpa-chat-item.is-active .wpa-badge {
+	background: #fff;
+	color: var(--wpa-blue);
+}
+
+.wpa-avatar {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 54px;
+	height: 54px;
+	border-radius: 50%;
+	font-weight: 500;
+	color: #fff;
+	user-select: none;
+}
+
+.wpa-avatar--sm { width: 42px; height: 42px; font-size: 16px; }
+.wpa-avatar--assistant { background: linear-gradient(145deg, #6ec6ff, #1e88e5); }
+.wpa-avatar--user { background: linear-gradient(145deg, #26a69a, #00897b); }
+.wpa-avatar--chat { background: linear-gradient(145deg, #ab47bc, #7b1fa2); }
+
+.wpa-chat-item__body { flex: 1; min-width: 0; padding-top: 4px; }
+
+.wpa-chat-item__top,
+.wpa-chat-item__bottom {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.wpa-chat-item__title {
+	font-size: 15px;
+	font-weight: 500;
+	color: var(--wpa-text);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wpa-chat-item__time {
+	font-size: 12px;
+	color: var(--wpa-text-muted);
+	flex: 0 0 auto;
+}
+
+.wpa-chat-item__preview {
+	margin-top: 3px;
+	font-size: 14px;
+	color: var(--wpa-text-muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wpa-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 22px;
+	height: 22px;
+	padding: 0 6px;
+	border-radius: 11px;
+	background: var(--wpa-blue);
+	color: #fff;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+/* FAB گفتگوی جدید — مثل تلگرام */
+.wpa-fab {
+	position: absolute;
+	left: 20px;
+	bottom: 20px;
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	border: 0;
+	border-radius: 50%;
+	background: var(--wpa-blue);
+	color: #fff;
+	cursor: pointer;
+	box-shadow: 0 3px 10px rgba(51, 144, 236, 0.45);
+	transition: background var(--wpa-transition), transform var(--wpa-transition);
+}
+
+.wpa-fab:hover { background: var(--wpa-blue-deep); }
+.wpa-fab:active { transform: scale(0.94); }
+
+/* —— Main —— */
+.wpa-main {
+	position: relative;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+	background: var(--wpa-chat-bg);
+}
+
+.wpa-topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	min-height: 56px;
+	padding: 6px 12px;
+	background: var(--wpa-topbar-bg);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+	z-index: 3;
+}
+
+.wpa-topbar__peer {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+}
+
+.wpa-topbar__title {
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.2;
+}
+
+.wpa-topbar__status {
+	font-size: 13px;
+	color: var(--wpa-blue);
+	line-height: 1.2;
+}
+
+.wpa-topbar__actions { display: flex; align-items: center; }
+
+.wpa-messages {
+	position: relative;
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.wpa-messages__pattern {
+	position: absolute;
+	inset: 0;
+	/* الگوی نزدیک به والپیپر کلاسیک تلگرام */
+	background-color: #8ca0b3;
+	background-image:
+		radial-gradient(rgba(255, 255, 255, 0.14) 1.2px, transparent 1.2px),
+		radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+	background-size: 26px 26px, 52px 52px;
+	background-position: 0 0, 13px 18px;
+	pointer-events: none;
+}
+
+.wpa-messages__inner {
+	position: relative;
+	z-index: 1;
+	height: 100%;
+	overflow-y: auto;
+	padding: 10px 10px 16px;
+	scroll-behavior: smooth;
+}
+
+.wpa-empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100%;
+	padding: 24px;
+}
+
+.wpa-empty.is-hidden { display: none; }
+
+.wpa-empty__card {
+	max-width: 300px;
+	padding: 12px 16px;
+	border-radius: 14px;
+	background: rgba(255, 255, 255, 0.85);
+	color: var(--wpa-text);
+	text-align: center;
+	box-shadow: var(--wpa-shadow);
+	animation: wpa-fade-in 220ms ease-out;
+}
+
+.wpa-empty__title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.wpa-empty__hint { font-size: 13px; color: var(--wpa-text-muted); }
+
+.wpa-row {
+	display: flex;
+	margin: 3px 6px;
+	animation: wpa-bubble-in 180ms cubic-bezier(0.2, 0.9, 0.2, 1);
+	transform-origin: bottom right;
+}
+
+.wpa-row.is-out { justify-content: flex-start; transform-origin: bottom left; }
+.wpa-row.is-in { justify-content: flex-end; }
+
+.wpa-bubble {
+	position: relative;
+	max-width: min(78%, 420px);
+	padding: 7px 10px 3px 11px;
+	border-radius: var(--wpa-radius-bubble);
+	box-shadow: var(--wpa-shadow);
+	word-wrap: break-word;
+	overflow-wrap: anywhere;
+}
+
+.wpa-row.is-in .wpa-bubble {
+	background: var(--wpa-incoming);
+	border-bottom-left-radius: 5px;
+}
+
+.wpa-row.is-out .wpa-bubble {
+	background: var(--wpa-outgoing);
+	border-bottom-right-radius: 5px;
+}
+
+.wpa-bubble__text {
+	font-size: 15px;
+	line-height: 1.4;
+	white-space: pre-wrap;
+}
+
+.wpa-row.is-out .wpa-bubble__text {
+	cursor: text;
+}
+
+.wpa-bubble__meta {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 4px;
+	margin-top: 2px;
+	user-select: none;
+}
+
+.wpa-bubble__tokens {
+	font-size: 10px;
+	color: var(--wpa-text-muted);
+	margin-left: 4px;
+	opacity: 0.85;
+}
+
+.wpa-bubble__route {
+	font-size: 10px;
+	color: var(--wpa-blue);
+	margin-left: 4px;
+	opacity: 0.9;
+	max-width: 140px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wpa-bubble__time {
+	font-size: 11px;
+	color: var(--wpa-text-muted);
+	line-height: 1;
+}
+
+.wpa-row.is-out .wpa-bubble__time { color: var(--wpa-outgoing-meta); }
+
+.wpa-bubble__checks {
+	display: none;
+	color: var(--wpa-outgoing-meta);
+	line-height: 0;
+}
+
+.wpa-row.is-out .wpa-bubble__checks { display: inline-flex; }
+
+.wpa-scroll-down {
+	position: absolute;
+	left: 18px;
+	bottom: 18px;
+	z-index: 4;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 42px;
+	height: 42px;
+	border: 0;
+	border-radius: 50%;
+	background: #fff;
+	color: #4a4a4a;
+	box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	animation: wpa-fade-in 160ms ease-out;
+}
+
+.wpa-scroll-down[hidden] { display: none !important; }
+
+.wpa-fab.is-loading {
+	pointer-events: none;
+	opacity: 0.75;
+}
+
+.wpa-fab.is-loading svg {
+	animation: wpa-spin 0.8s linear infinite;
+}
+
+.wpa-sidebar-loading {
+	padding: 10px 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.wpa-sidebar-skel {
+	height: 58px;
+	border-radius: 12px;
+	background: linear-gradient(90deg, #f0f2f5 25%, #e6e9ee 37%, #f0f2f5 63%);
+	background-size: 400% 100%;
+	animation: wpa-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes wpa-shimmer {
+	0% { background-position: 100% 0; }
+	100% { background-position: 0 0; }
+}
+
+.wpa-loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100%;
+	padding: 24px;
+}
+
+.wpa-loading[hidden] { display: none !important; }
+
+.wpa-loading__card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	padding: 14px 18px;
+	border-radius: 14px;
+	background: rgba(255, 255, 255, 0.88);
+	box-shadow: var(--wpa-shadow);
+}
+
+.wpa-loading__text {
+	font-size: 13px;
+	color: var(--wpa-text-muted);
+}
+
+.wpa-loading__dots {
+	display: inline-flex;
+	gap: 5px;
+}
+
+.wpa-loading__dots span {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #8a939b;
+	animation: wpa-dot 1.1s infinite ease-in-out;
+}
+
+.wpa-loading__dots span:nth-child(2) { animation-delay: 0.15s; }
+.wpa-loading__dots span:nth-child(3) { animation-delay: 0.3s; }
+
+.wpa-composer-wrap {
+	position: relative;
+	z-index: 6;
+	background: #fff;
+}
+
+.wpa-edit-bar {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 8px 0;
+	border-top: 1px solid rgba(51, 144, 236, 0.25);
+	background: #fff;
+}
+
+.wpa-edit-bar[hidden] { display: none !important; }
+
+.wpa-edit-bar:not([hidden]) + .wpa-composer,
+.wpa-reply-bar:not([hidden]) + .wpa-composer {
+	border-top: 0;
+	padding-top: 4px;
+}
+
+.wpa-reply-bar {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 8px 0;
+	border-top: 1px solid rgba(51, 144, 236, 0.25);
+	background: #fff;
+}
+
+.wpa-reply-bar[hidden] { display: none !important; }
+
+.wpa-reply-bar__meta {
+	flex: 1;
+	min-width: 0;
+	border-right: 3px solid var(--wpa-blue);
+	padding: 4px 10px 6px 0;
+}
+
+.wpa-reply-bar__title {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--wpa-blue);
+}
+
+.wpa-reply-bar__preview {
+	font-size: 13px;
+	color: var(--wpa-text-muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wpa-send-queue {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 8px 10px 0;
+	background: #fff;
+	border-top: 1px solid rgba(51, 144, 236, 0.18);
+}
+
+.wpa-send-queue[hidden] { display: none !important; }
+
+.wpa-send-queue__head {
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--wpa-text-muted);
+}
+
+.wpa-send-queue__item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 8px 10px;
+	border: 0;
+	border-radius: 10px;
+	background: #f4f7fb;
+	color: var(--wpa-text);
+	font: inherit;
+	text-align: right;
+	cursor: pointer;
+	transition: background var(--wpa-transition);
+}
+
+.wpa-send-queue__item:hover { background: #e8eef6; }
+
+.wpa-send-queue__text {
+	flex: 1;
+	min-width: 0;
+	font-size: 13px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wpa-send-queue__hint {
+	flex: 0 0 auto;
+	font-size: 11px;
+	color: var(--wpa-blue);
+	font-weight: 600;
+}
+
+.wpa-send-queue__remove {
+	flex: 0 0 auto;
+	border: 0;
+	background: transparent;
+	color: var(--wpa-text-muted);
+	cursor: pointer;
+	padding: 2px 4px;
+	font-size: 16px;
+	line-height: 1;
+}
+
+.wpa-attach-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 8px 10px 0;
+	background: #fff;
+	border-top: 1px solid rgba(51, 144, 236, 0.12);
+}
+
+.wpa-attach-bar[hidden] { display: none !important; }
+
+.wpa-attach-chip {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	max-width: 180px;
+	padding: 6px 28px 6px 8px;
+	border-radius: 10px;
+	background: #f1f5f9;
+	font-size: 12px;
+}
+
+.wpa-attach-chip__thumb {
+	width: 36px;
+	height: 36px;
+	border-radius: 6px;
+	object-fit: cover;
+	background: #dde3ea;
+	flex: 0 0 auto;
+}
+
+.wpa-attach-chip__icon {
+	width: 36px;
+	height: 36px;
+	border-radius: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #e2e8f0;
+	color: var(--wpa-text-muted);
+	font-size: 11px;
+	font-weight: 700;
+	flex: 0 0 auto;
+}
+
+.wpa-attach-chip__name {
+	min-width: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wpa-attach-chip__x {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	border: 0;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.45);
+	color: #fff;
+	cursor: pointer;
+	font-size: 14px;
+	line-height: 1;
+}
+
+.wpa-bubble__atts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin: 6px 0 2px;
+}
+
+.wpa-bubble__atts[hidden] { display: none !important; }
+
+.wpa-bubble__att-img {
+	display: block;
+	max-width: min(240px, 100%);
+	max-height: 180px;
+	border-radius: 10px;
+	object-fit: cover;
+}
+
+.wpa-bubble__att-video {
+	display: block;
+	max-width: min(320px, 100%);
+	border-radius: 10px;
+	background: #000;
+}
+
+.wpa-bubble__att-audio {
+	display: block;
+	width: min(280px, 100%);
+	margin-top: 4px;
+}
+
+.wpa-bubble__att-file {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 10px;
+	border-radius: 8px;
+	background: rgba(51, 144, 236, 0.1);
+	color: var(--wpa-blue);
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.wpa-bubble__att-file:hover { text-decoration: underline; }
+
+.wpa-bubble__reply {
+	margin: 0 0 6px;
+	padding: 6px 8px;
+	border-right: 3px solid var(--wpa-blue);
+	background: rgba(51, 144, 236, 0.08);
+	border-radius: 0 8px 8px 0;
+}
+
+.wpa-bubble__reply[hidden] { display: none !important; }
+
+.wpa-bubble__reply-title {
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--wpa-blue);
+	margin-bottom: 2px;
+}
+
+.wpa-bubble__reply-preview {
+	font-size: 12px;
+	color: var(--wpa-text-muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wpa-edit-bar__meta {
+	flex: 1;
+	min-width: 0;
+	border-right: 3px solid var(--wpa-blue);
+	padding: 4px 10px 6px 0;
+}
+
+.wpa-edit-bar__title {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--wpa-blue);
+}
+
+.wpa-edit-bar__preview {
+	font-size: 13px;
+	color: var(--wpa-text-muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wpa-more-wrap { position: relative; }
+
+.wpa-pop-menu {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	min-width: 170px;
+	padding: 6px;
+	border-radius: 12px;
+	background: #fff;
+	box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+	z-index: 30;
+	animation: wpa-pop 140ms ease-out;
+}
+
+.wpa-pop-menu[hidden] { display: none !important; }
+
+.wpa-pop-menu--float {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 60;
+}
+
+.wpa-pop-menu__item {
+	display: block;
+	width: 100%;
+	padding: 10px 12px;
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
+	color: var(--wpa-text);
+	font: inherit;
+	text-align: right;
+	cursor: pointer;
+}
+
+.wpa-pop-menu__item:hover { background: var(--wpa-hover); }
+.wpa-pop-menu__item--danger { color: #e53935; }
+
+.wpa-action-log {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 0 4px 16px;
+}
+
+.wpa-action-log__empty {
+	padding: 18px 12px;
+	text-align: center;
+	color: var(--wpa-text-muted);
+	font-size: 14px;
+}
+
+.wpa-action-log__row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px;
+	border-radius: 12px;
+	background: #f7f8fa;
+}
+
+.wpa-action-log__main { flex: 1; min-width: 0; }
+
+.wpa-action-log__title {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--wpa-text);
+}
+
+.wpa-action-log__meta {
+	display: flex;
+	gap: 10px;
+	margin-top: 4px;
+	font-size: 12px;
+	color: var(--wpa-text-muted);
+}
+
+.wpa-action-log__status.is-done { color: #2e7d32; }
+.wpa-action-log__status.is-failed { color: #c62828; }
+.wpa-action-log__status.is-rolled_back { color: #ef6c00; }
+.wpa-action-log__status.is-running { color: #1565c0; }
+
+.wpa-action-log__rollback {
+	flex: 0 0 auto;
+	height: 32px;
+	padding: 0 12px;
+	border: 0;
+	border-radius: 8px;
+	background: #fff;
+	color: var(--wpa-blue);
+	box-shadow: 0 0 0 1px rgba(51, 144, 236, 0.35);
+	font: inherit;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.wpa-action-log__rollback:hover { background: #eef6ff; }
+.wpa-action-log__rollback:disabled { opacity: 0.5; cursor: default; }
+
+.wpa-chat-item[hidden] { display: none !important; }
+
+.wpa-chat-item.is-pending {
+	opacity: 0.7;
+}
+
+.wpa-row.is-pending .wpa-bubble {
+	opacity: 0.85;
+}
+
+.wpa-msg-search {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 6px 10px;
+	background: #fff;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+	z-index: 5;
+}
+
+.wpa-msg-search[hidden] { display: none !important; }
+
+.wpa-msg-search__input {
+	flex: 1;
+	min-width: 0;
+	height: 34px;
+	padding: 0 12px;
+	border: 0;
+	border-radius: 18px;
+	background: #f1f3f5;
+	font: inherit;
+	font-size: 14px;
+	outline: none;
+}
+
+.wpa-msg-search__count {
+	flex: 0 0 auto;
+	min-width: 48px;
+	text-align: center;
+	font-size: 12px;
+	color: var(--wpa-text-muted);
+}
+
+.wpa-row.is-search-hit .wpa-bubble {
+	box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.55);
+}
+
+.wpa-row.is-search-active .wpa-bubble {
+	box-shadow: 0 0 0 2px rgba(51, 144, 236, 0.85);
+}
+
+.wpa-tools {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 8px;
+}
+.wpa-tools[hidden] { display: none !important; }
+
+.wpa-tool-card {
+	margin-top: 0;
+	padding: 8px 10px;
+	border-radius: 10px;
+	background: rgba(0, 0, 0, 0.04);
+	border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.wpa-tool-card[hidden] { display: none !important; }
+
+.wpa-tool-card__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.wpa-tool-card__badge {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--wpa-blue);
+}
+
+.wpa-tool-card__status { font-size: 11px; font-weight: 500; }
+.wpa-tool-card__status.is-ok { color: #2e7d32; }
+.wpa-tool-card__status.is-fail { color: #c62828; }
+.wpa-tool-card__status.is-wait { color: #c79100; }
+
+.wpa-tool-card__body {
+	font-size: 13px;
+	line-height: 1.4;
+	color: var(--wpa-text);
+	white-space: pre-wrap;
+}
+
+.wpa-tool-card__img {
+	display: block;
+	max-width: min(100%, 320px);
+	width: auto;
+	height: auto;
+	margin-top: 8px;
+	border-radius: 10px;
+	object-fit: cover;
+}
+
+.wpa-tool-card__video {
+	display: block;
+	max-width: min(100%, 320px);
+	margin-top: 8px;
+	border-radius: 10px;
+	background: #000;
+}
+
+.wpa-tool-card__audio {
+	display: block;
+	width: min(100%, 280px);
+	margin-top: 8px;
+}
+
+.wpa-tool-card__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 6px;
+}
+
+.wpa-tool-card__link {
+	font-size: 12px;
+	color: var(--wpa-blue);
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.wpa-tool-card__link:hover { text-decoration: underline; }
+
+.wpa-tool-card__btn {
+	border: 0;
+	border-radius: 8px;
+	padding: 6px 12px;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	background: rgba(0, 0, 0, 0.06);
+	color: var(--wpa-text);
+}
+.wpa-tool-card__btn--ok {
+	background: var(--wpa-blue);
+	color: #fff;
+}
+.wpa-tool-card__btn:disabled {
+	opacity: 0.6;
+	cursor: default;
+}
+
+.wpa-saved-models__item {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.wpa-saved-models__info { flex: 1; min-width: 0; }
+
+.wpa-saved-models__default {
+	font-style: normal;
+	font-size: 11px;
+	font-weight: 500;
+	color: #2e7d32;
+	margin-right: 4px;
+}
+
+.wpa-saved-models__actions {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.wpa-saved-models__btn {
+	height: 28px;
+	padding: 0 10px;
+	border: 0;
+	border-radius: 8px;
+	background: #fff;
+	color: var(--wpa-blue);
+	box-shadow: 0 0 0 1px rgba(51, 144, 236, 0.3);
+	font: inherit;
+	font-size: 12px;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.wpa-saved-models__btn--danger {
+	color: #c62828;
+	box-shadow: 0 0 0 1px rgba(198, 40, 40, 0.3);
+}
+
+@keyframes wpa-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* —— Composer (مثل تلگرام: شِل گرد + متن داخلش) —— */
+.wpa-composer {
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+	gap: 8px;
+	padding: 8px 10px 10px;
+	background: #fff;
+	border-top: 1px solid rgba(0, 0, 0, 0.06);
+	z-index: 6;
+}
+
+.wpa-composer__tools {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding-bottom: 2px;
+	flex: 0 0 auto;
+}
+
+.wpa-plus-wrap { position: relative; }
+
+.wpa-plus {
+	width: 40px;
+	height: 40px;
+	color: var(--wpa-blue);
+}
+.wpa-plus[aria-expanded="true"] {
+	background: rgba(51, 144, 236, 0.12);
+	color: var(--wpa-blue-deep);
+}
+
+.wpa-plus-menu {
+	position: absolute;
+	bottom: calc(100% + 8px);
+	right: 0;
+	min-width: 180px;
+	padding: 6px;
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+	animation: wpa-pop 140ms ease-out;
+	z-index: 20;
+}
+
+.wpa-plus-menu[hidden] { display: none !important; }
+
+.wpa-plus-menu__item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 10px 12px;
+	border: 0;
+	border-radius: 10px;
+	background: transparent;
+	color: var(--wpa-text);
+	font: inherit;
+	text-align: right;
+	cursor: pointer;
+}
+
+.wpa-plus-menu__item:hover { background: var(--wpa-hover); }
+.wpa-plus-menu__icon { color: var(--wpa-blue); display: inline-flex; }
+
+.wpa-model-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	max-width: 128px;
+	height: 34px;
+	padding: 0 8px 0 4px;
+	border: 0;
+	border-radius: 18px;
+	background: #eff1f3;
+	color: var(--wpa-text);
+	font: inherit;
+	font-size: 12px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background var(--wpa-transition);
+}
+
+.wpa-model-btn:hover { background: #e4e7ea; }
+
+.wpa-model-btn__label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wpa-model-menu {
+	position: absolute;
+	bottom: calc(100% + 8px);
+	right: 44px;
+	min-width: 220px;
+	max-width: 300px;
+	max-height: 320px;
+	overflow: auto;
+	padding: 6px;
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+	animation: wpa-pop 140ms ease-out;
+	z-index: 20;
+}
+
+.wpa-model-menu[hidden] { display: none !important; }
+
+.wpa-model-menu__group {
+	padding: 8px 12px 4px;
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--wpa-text-muted);
+	letter-spacing: 0.02em;
+}
+
+.wpa-model-menu__item {
+	display: block;
+	width: 100%;
+	padding: 10px 12px;
+	border: 0;
+	border-radius: 10px;
+	background: transparent;
+	color: var(--wpa-text);
+	font: inherit;
+	text-align: right;
+	cursor: pointer;
+}
+
+.wpa-model-menu__item strong {
+	display: block;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.wpa-model-menu__item span {
+	display: block;
+	font-size: 11px;
+	opacity: 0.72;
+	margin-top: 2px;
+}
+
+.wpa-model-menu__item:hover:not(:disabled) { background: var(--wpa-hover); }
+.wpa-model-menu__item.is-active { background: rgba(51, 144, 236, 0.12); color: var(--wpa-blue); }
+.wpa-model-menu__item.is-muted,
+.wpa-model-menu__item:disabled {
+	color: var(--wpa-text-muted);
+	cursor: default;
+	font-size: 12px;
+}
+
+.wpa-model-menu__item--auto {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+	margin-bottom: 4px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+	border-radius: 10px 10px 0 0;
+	padding-bottom: 12px;
+}
+.wpa-model-menu__item--auto strong {
+	font-size: 13px;
+	font-weight: 700;
+}
+.wpa-model-menu__item--auto span {
+	font-size: 11px;
+	color: var(--wpa-text-muted);
+	font-weight: 400;
+}
+.wpa-model-menu__item--auto.is-active span {
+	color: rgba(51, 144, 236, 0.85);
+}
+
+/* شِل پیام شبیه تلگرام — نه اینپوت خام وردپرس */
+.wpa-composer__shell {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	align-items: center;
+	min-height: 44px;
+	padding: 9px 16px;
+	border-radius: 22px;
+	background: #f1f3f4;
+	border: 1px solid transparent;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02);
+	transition: background 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.wpa-composer__shell:focus-within {
+	background: #fff;
+	border-color: rgba(51, 144, 236, 0.35);
+	box-shadow: 0 0 0 3px rgba(51, 144, 236, 0.12);
+}
+
+.wpa-composer__input {
+	display: block;
+	width: 100%;
+	min-height: 22px;
+	max-height: 140px;
+	margin: 0;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	resize: none;
+	outline: none !important;
+	box-shadow: none !important;
+	background: transparent !important;
+	color: var(--wpa-text) !important;
+	font-family: var(--wpa-font) !important;
+	font-size: 15px !important;
+	font-weight: 400 !important;
+	line-height: 1.45 !important;
+	overflow-y: auto;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.wpa-composer__input:focus,
+.wpa-composer__input:focus-visible {
+	outline: none !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+
+.wpa-composer__input::placeholder {
+	color: #9aa3ab;
+	font-family: var(--wpa-font);
+	opacity: 1;
+}
+
+.wpa-stop {
+	flex: 0 0 auto;
+	width: 42px;
+	height: 42px;
+	margin: 0 0 0 2px;
+	border: 0;
+	border-radius: 50%;
+	background: #e53935;
+	color: #fff;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 1px 4px rgba(229, 57, 53, 0.35);
+	transition: background var(--wpa-transition), transform var(--wpa-transition), opacity var(--wpa-transition);
+}
+
+.wpa-stop[hidden] { display: none !important; }
+.wpa-stop:hover { background: #c62828; }
+.wpa-stop:active { transform: scale(0.92); }
+
+.wpa-send {
+	position: relative;
+	flex: 0 0 auto;
+	width: 46px;
+	height: 46px;
+	margin: 0;
+	border: 0;
+	border-radius: 50%;
+	background: var(--wpa-blue);
+	color: #fff;
+	cursor: pointer;
+	overflow: hidden;
+	box-shadow: 0 1px 4px rgba(51, 144, 236, 0.35);
+	transition: background var(--wpa-transition), transform var(--wpa-transition);
+}
+
+.wpa-send:hover { background: var(--wpa-blue-deep); }
+.wpa-send:active { transform: scale(0.92); }
+
+.wpa-send__icon {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: opacity 140ms ease, transform 180ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.wpa-send[data-mode="mic"] .wpa-send__icon--send,
+.wpa-send[data-mode="send"] .wpa-send__icon--mic,
+.wpa-send[data-mode="check"] .wpa-send__icon--mic,
+.wpa-send[data-mode="check"] .wpa-send__icon--send,
+.wpa-send[data-mode="mic"] .wpa-send__icon--check,
+.wpa-send[data-mode="send"] .wpa-send__icon--check {
+	opacity: 0;
+	transform: scale(0.5) rotate(-20deg);
+	pointer-events: none;
+}
+
+.wpa-send[data-mode="mic"] .wpa-send__icon--mic,
+.wpa-send[data-mode="send"] .wpa-send__icon--send,
+.wpa-send[data-mode="check"] .wpa-send__icon--check {
+	opacity: 1;
+	transform: scale(1) rotate(0deg);
+}
+
+.wpa-send[data-mode="send"] .wpa-send__icon--send svg { transform: scaleX(-1); }
+
+.wpa-send.is-listening {
+	background: #e53935;
+	animation: wpa-mic-pulse 1.1s ease-in-out infinite;
+}
+
+.wpa-send.is-listening:hover { background: #c62828; }
+
+@keyframes wpa-mic-pulse {
+	0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.45); }
+	50% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); }
+}
+
+.wpa-file-input { display: none !important; }
+
+/* —— Rename dialog —— */
+.wpa-dialog {
+	position: absolute;
+	inset: 0;
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+}
+
+.wpa-dialog[hidden] { display: none !important; }
+
+.wpa-dialog__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+}
+
+.wpa-dialog__card {
+	position: relative;
+	z-index: 1;
+	width: min(360px, 100%);
+	padding: 18px 16px 14px;
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+	animation: wpa-pop 160ms ease-out;
+}
+
+.wpa-dialog__title {
+	margin: 0 0 14px;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.wpa-dialog__input {
+	width: 100%;
+	height: 44px;
+	padding: 0 12px;
+	border: 0;
+	border-bottom: 2px solid var(--wpa-blue);
+	background: transparent;
+	color: var(--wpa-text);
+	font: inherit;
+	font-size: 15px;
+	outline: none;
+}
+
+.wpa-dialog__textarea {
+	width: 100%;
+	min-height: 96px;
+	padding: 10px 12px;
+	border: 1px solid #e4e7ea;
+	border-radius: 10px;
+	background: #fff;
+	color: var(--wpa-text);
+	font: inherit;
+	font-size: 15px;
+	line-height: 1.45;
+	resize: vertical;
+	outline: none;
+}
+
+.wpa-dialog__textarea:focus {
+	border-color: var(--wpa-blue);
+	box-shadow: 0 0 0 3px rgba(51, 144, 236, 0.12);
+}
+
+.wpa-bubble__edited {
+	font-size: 10px;
+	color: var(--wpa-text-muted);
+	margin-left: 4px;
+}
+
+.wpa-row.is-out .wpa-bubble__edited { color: var(--wpa-outgoing-meta); }
+
+.wpa-dialog__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 18px;
+}
+
+.wpa-dialog__btn {
+	height: 36px;
+	padding: 0 14px;
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
+	color: var(--wpa-blue);
+	font: inherit;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.wpa-dialog__btn:hover { background: rgba(51, 144, 236, 0.08); }
+.wpa-dialog__btn--primary { background: rgba(51, 144, 236, 0.12); }
+
+/* —— Settings (Telegram-like: منو → صفحه جزئیات) —— */
+.wpa-settings {
+	position: absolute;
+	inset: 0;
+	z-index: 40;
+}
+
+.wpa-settings[hidden] { display: none !important; }
+
+.wpa-settings__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	animation: wpa-fade-in 160ms ease-out;
+}
+
+.wpa-settings__panel {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: min(420px, 100%);
+	display: flex;
+	flex-direction: column;
+	background: #f4f4f5;
+	box-shadow: -2px 0 24px rgba(0, 0, 0, 0.22);
+	animation: wpa-slide-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	overflow: hidden;
+}
+
+.wpa-settings__header {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	min-height: 56px;
+	padding: 6px 10px 6px 8px;
+	background: #fff;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+	z-index: 2;
+}
+
+.wpa-settings__title {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+}
+
+.wpa-settings__icon-back { display: none; }
+.wpa-settings__panel[data-page="add-model"] .wpa-settings__icon-close { display: none; }
+.wpa-settings__panel[data-page="add-model"] .wpa-settings__icon-back { display: block; }
+
+.wpa-settings__pages {
+	position: relative;
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.wpa-settings__page {
+	position: absolute;
+	inset: 0;
+	overflow-y: auto;
+	padding: 12px;
+	background: #f4f4f5;
+	animation: wpa-page-in 200ms ease-out;
+}
+
+.wpa-settings__page[hidden] { display: none !important; }
+
+.wpa-settings__section {
+	margin-bottom: 12px;
+	padding: 4px 0;
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(16, 35, 47, 0.08);
+	overflow: hidden;
+}
+
+.wpa-credit-card {
+	margin: 12px 16px 8px;
+	padding: 14px 16px;
+	border-radius: 14px;
+	background: linear-gradient(145deg, #f7f9fc 0%, #eef3f9 100%);
+	border: 1px solid rgba(51, 144, 236, 0.12);
+}
+
+.wpa-credit-card.is-low {
+	background: linear-gradient(145deg, #fff8f0 0%, #ffefdf 100%);
+	border-color: rgba(220, 120, 40, 0.28);
+}
+
+.wpa-credit-card.is-stale {
+	border-color: rgba(180, 140, 40, 0.45);
+}
+
+.wpa-credit-card.is-loading .wpa-credit-card__balance {
+	opacity: 0.45;
+}
+
+.wpa-credit-card__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 6px;
+}
+
+.wpa-credit-card__label {
+	font-size: 12px;
+	color: var(--wpa-text-muted);
+}
+
+.wpa-credit-card__refresh {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--wpa-blue);
+	cursor: pointer;
+}
+
+.wpa-credit-card__refresh:hover {
+	background: rgba(51, 144, 236, 0.1);
+}
+
+.wpa-credit-card.is-loading .wpa-credit-card__refresh svg {
+	animation: wpa-spin 0.8s linear infinite;
+}
+
+.wpa-credit-card__balance {
+	font-size: 26px;
+	font-weight: 700;
+	line-height: 1.2;
+	color: var(--wpa-text);
+}
+
+.wpa-credit-card__detail {
+	margin-top: 4px;
+	font-size: 12px;
+	color: var(--wpa-text-muted);
+	min-height: 1em;
+}
+
+.wpa-credit-card__warn {
+	margin-top: 8px;
+	padding: 8px 10px;
+	border-radius: 10px;
+	background: rgba(220, 120, 40, 0.12);
+	color: #9a4d10;
+	font-size: 12px;
+	line-height: 1.45;
+}
+
+.wpa-credit-card__warn[hidden] {
+	display: none !important;
+}
+
+.wpa-credit-card__charge {
+	display: inline-flex;
+	margin-top: 12px;
+	padding: 8px 14px;
+	border-radius: 10px;
+	background: #1c3344;
+	color: #fff !important;
+	font-size: 13px;
+	font-weight: 600;
+	text-decoration: none !important;
+}
+
+.wpa-credit-card__charge:hover {
+	background: #2a4a5e;
+	color: #fff !important;
+}
+
+.wpa-credit-card.is-low .wpa-credit-card__charge {
+	background: #c45c4a;
+}
+
+.wpa-assistant-card {
+	margin: 8px 16px 12px;
+	padding: 14px 16px;
+	border-radius: 14px;
+	background: linear-gradient(160deg, #17212b 0%, #1c2733 100%);
+	color: #fff;
+}
+
+.wpa-assistant-card__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 8px;
+}
+
+.wpa-assistant-card__title {
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.wpa-assistant-card__desc {
+	margin: 0 0 12px;
+	font-size: 12.5px;
+	line-height: 1.45;
+	opacity: 0.85;
+}
+
+.wpa-assistant-card .wpa-field__label {
+	color: rgba(255, 255, 255, 0.75);
+}
+
+.wpa-assistant-card .wpa-field__control {
+	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	color: #fff;
+}
+
+.wpa-assistant-card .wpa-btn-secondary {
+	margin-top: 8px;
+	width: 100%;
+}
+
+.wpa-assistant-card__hint {
+	margin: 8px 0 0;
+	font-size: 12px;
+	color: #8fd3ff;
+}
+
+.wpa-assistant-card__hint[hidden] {
+	display: none !important;
+}
+
+.wpa-net-banner {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	margin: 0;
+	padding: 8px 12px;
+	background: #fff3cd;
+	color: #664d03;
+	font-size: 13px;
+	font-weight: 600;
+	text-align: center;
+	cursor: pointer;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.wpa-net-banner[hidden] {
+	display: none !important;
+}
+
+.wpa-date-sep {
+	text-align: center;
+	margin: 12px 0;
+	font-size: 12px;
+	color: #707579;
+}
+
+.wpa-date-sep::before,
+.wpa-date-sep::after {
+	content: '';
+}
+
+.wpa-assistant-card .wpa-field--row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.wpa-assistant-card .wpa-btn-secondary + .wpa-btn-secondary {
+	margin-top: 8px;
+}
+
+.wpa-assistant-modules {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+	margin: 10px 0 12px;
+	align-items: center;
+}
+
+.wpa-assistant-modules .wpa-field__label {
+	flex: 1 0 100%;
+}
+
+.wpa-check {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 12px;
+	color: #333;
+}
+
+.wpa-assistant-card__stats {
+	margin-top: 10px;
+	padding: 10px;
+	background: #f4f6f8;
+	border-radius: 10px;
+	font-size: 11px;
+	max-height: 140px;
+	overflow: auto;
+	white-space: pre-wrap;
+}
+
+.wpa-assistant-card__stats[hidden] {
+	display: none !important;
+}
+
+.wpa-chat-item.is-pinned .wpa-chat-item__title {
+	font-weight: 800;
+}
+
+.wpa-switch {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+}
+.wpa-switch input {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+.wpa-switch__ui {
+	width: 44px;
+	height: 26px;
+	border-radius: 13px;
+	background: rgba(255, 255, 255, 0.2);
+	position: relative;
+	transition: background 160ms ease;
+}
+.wpa-switch__ui::after {
+	content: '';
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: #fff;
+	transition: transform 160ms ease;
+}
+.wpa-switch input:checked + .wpa-switch__ui {
+	background: #2aabee;
+}
+.wpa-switch input:checked + .wpa-switch__ui::after {
+	transform: translateX(-18px);
+}
+
+.wpa-settings-item {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	width: 100%;
+	padding: 12px 14px;
+	border: 0;
+	background: transparent;
+	text-align: right;
+	cursor: pointer;
+	font: inherit;
+	color: var(--wpa-text);
+	transition: background 120ms ease;
+}
+
+.wpa-settings-item:hover { background: rgba(0, 0, 0, 0.04); }
+.wpa-settings-item:active { background: rgba(0, 0, 0, 0.07); }
+
+.wpa-settings-item__icon {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	background: var(--ico, #3390ec);
+}
+
+.wpa-settings-item__text {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.wpa-settings-item__title {
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.25;
+}
+
+.wpa-settings-item__sub {
+	font-size: 13px;
+	color: var(--wpa-text-muted);
+	line-height: 1.25;
+}
+
+.wpa-settings-item__chev {
+	flex: 0 0 auto;
+	color: #b0b5ba;
+	display: inline-flex;
+}
+
+/* تنظیمات تلگرام‌وار (دستیار زنده) */
+.wpa-tg-section {
+	margin: 0 0 12px;
+	background: #fff;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.wpa-tg-section__title {
+	padding: 10px 14px 4px;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--wpa-text-muted, #707579);
+}
+
+.wpa-tg-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 12px 14px;
+	border-top: 1px solid rgba(0, 0, 0, 0.06);
+	min-height: 48px;
+}
+
+.wpa-tg-section > .wpa-tg-row:first-child,
+.wpa-tg-section > .wpa-tg-section__title + .wpa-tg-row {
+	border-top: 0;
+}
+
+.wpa-tg-row--stack {
+	flex-direction: column;
+	align-items: stretch;
+	gap: 8px;
+}
+
+.wpa-tg-row__label {
+	font-size: 15px;
+	color: var(--wpa-text);
+	line-height: 1.3;
+}
+
+.wpa-tg-input {
+	width: 100%;
+	box-sizing: border-box;
+	border: 0;
+	border-radius: 10px;
+	background: #f4f4f5;
+	padding: 10px 12px;
+	font: inherit;
+	font-size: 14px;
+	color: var(--wpa-text);
+	outline: none;
+}
+
+.wpa-tg-input:focus {
+	box-shadow: 0 0 0 2px rgba(42, 171, 238, 0.35);
+}
+
+.wpa-tg-actions {
+	padding: 4px 0 16px;
+}
+
+.wpa-tg-actions .wpa-btn-primary {
+	margin-top: 4px;
+}
+
+.wpa-tg-row--radio {
+	cursor: pointer;
+}
+
+.wpa-tg-row--radio .wpa-tg-row__label {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	flex: 1;
+	min-width: 0;
+}
+
+.wpa-tg-row--radio .wpa-tg-row__title {
+	font-size: 15px;
+	font-weight: 500;
+}
+
+.wpa-tg-row--radio .wpa-tg-row__sub {
+	font-size: 12px;
+	color: var(--wpa-text-muted, #707579);
+}
+
+.wpa-tg-row--radio input[type="radio"] {
+	flex: 0 0 auto;
+	width: 18px;
+	height: 18px;
+	accent-color: #2aabee;
+}
+
+.wpa-api-active-url {
+	display: block;
+	padding: 10px 12px;
+	border-radius: 10px;
+	background: #f4f4f5;
+	font-size: 12px;
+	word-break: break-all;
+	direction: ltr;
+	text-align: left;
+}
+
+.wpa-link-btn {
+	display: inline;
+	margin-right: 6px;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--wpa-blue, #3390ec);
+	font: inherit;
+	font-size: inherit;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+#wpa-settings-page-assistant .wpa-assistant-modules {
+	padding: 4px 14px 12px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 14px;
+}
+
+#wpa-settings-page-assistant .wpa-assistant-card__stats,
+#wpa-settings-page-assistant .wpa-assistant-card__hint {
+	margin-top: 10px;
+}
+
+/* ابزارها — لیست تلگرام‌وار */
+.wpa-tools-view {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	background: var(--wpa-chat-bg, #8ca0ad);
+	padding: 10px 0 24px;
+}
+
+.wpa-tools-view__hint {
+	margin: 8px 16px 12px;
+	padding: 10px 14px;
+	border-radius: 12px;
+	background: rgba(255, 255, 255, 0.92);
+	color: var(--wpa-text-muted, #707579);
+	font-size: 13px;
+	line-height: 1.45;
+}
+
+.wpa-tools-list {
+	margin: 0 10px;
+	background: #fff;
+	border-radius: 14px;
+	overflow: hidden;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.wpa-tools-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	padding: 11px 14px;
+	border: 0;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+	background: transparent;
+	text-align: right;
+	cursor: pointer;
+	font: inherit;
+	color: var(--wpa-text);
+	transition: background 120ms ease;
+}
+
+.wpa-tools-row:last-child {
+	border-bottom: 0;
+}
+
+.wpa-tools-row:hover {
+	background: rgba(0, 0, 0, 0.04);
+}
+
+.wpa-tools-row:active {
+	background: rgba(0, 0, 0, 0.07);
+}
+
+.wpa-tools-row__icon {
+	flex: 0 0 auto;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	background: var(--ico, #3390ec);
+	color: #fff;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1;
+}
+
+.wpa-tools-row__text {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.wpa-tools-row__title {
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.25;
+}
+
+.wpa-tools-row__sub {
+	font-size: 13px;
+	color: var(--wpa-text-muted, #707579);
+	line-height: 1.25;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wpa-tools-row__chev {
+	flex: 0 0 auto;
+	color: #b0b5ba;
+	display: inline-flex;
+}
+
+.wpa-tools-empty {
+	padding: 28px 16px;
+	text-align: center;
+	color: var(--wpa-text-muted, #707579);
+	font-size: 14px;
+}
+
+.wpa-chat-item--tools {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.wpa-avatar--tools {
+	background: linear-gradient(145deg, #3390ec, #2aabee) !important;
+	color: #fff;
+}
+
+.wpa-app[data-view="tools"] #wpa-messages,
+.wpa-app[data-view="tools"] .wpa-composer-wrap,
+.wpa-app[data-view="tools"] #wpa-msg-search {
+	display: none !important;
+}
+
+.wpa-app[data-view="tools"] .wpa-tools-view {
+	display: block;
+}
+
+.wpa-tools-back {
+	display: none;
+	color: var(--wpa-blue, #3390ec);
+}
+
+.wpa-app[data-view="tools"] .wpa-tools-back {
+	display: inline-flex;
+}
+
+.wpa-btn-secondary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 42px;
+	margin-top: 8px;
+	border: 0;
+	border-radius: 10px;
+	background: #eef2f6;
+	color: var(--wpa-text);
+	font: inherit;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.wpa-btn-secondary:hover { background: #e4e9ef; }
+.wpa-btn-secondary:disabled { opacity: 0.6; cursor: default; }
+
+.wpa-endpoint-switch {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 14px;
+}
+
+.wpa-endpoint-switch__opt {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 12px;
+	border-radius: 10px;
+	background: #f7f8fa;
+	cursor: pointer;
+	font-size: 13px;
+}
+
+.wpa-endpoint-switch__opt code {
+	margin-right: auto;
+	font-size: 11px;
+	color: var(--wpa-text-muted);
+	background: transparent;
+}
+
+.wpa-endpoint-switch__opt:has(input:checked) {
+	background: #eaf3ff;
+	box-shadow: inset 0 0 0 1px rgba(51, 144, 236, 0.35);
+}
+
+.wpa-field__help {
+	display: block;
+	margin-top: 6px;
+	font-size: 12px;
+	color: var(--wpa-text-muted);
+}
+
+.wpa-provider-hint {
+	margin: -4px 0 10px;
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--wpa-text-muted);
+}
+
+.wpa-provider-hint a {
+	color: var(--wpa-blue);
+	text-decoration: none;
+}
+
+.wpa-provider-hint a:hover { text-decoration: underline; }
+
+.wpa-settings__hint {
+	margin: 0 0 12px;
+	padding: 11px 13px;
+	border-radius: 12px;
+	background: #fff;
+	color: var(--wpa-text-muted);
+	font-size: 13px;
+	line-height: 1.45;
+	box-shadow: 0 1px 2px rgba(16, 35, 47, 0.08);
+}
+
+.wpa-form {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 14px;
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(16, 35, 47, 0.08);
+}
+
+.wpa-field { display: flex; flex-direction: column; gap: 6px; }
+.wpa-field__label { font-size: 13px; color: var(--wpa-text-muted); }
+
+.wpa-field__control {
+	width: 100%;
+	height: 44px;
+	padding: 0 12px;
+	border: 1px solid #e4e7ea;
+	border-radius: 10px;
+	background: #fff;
+	color: var(--wpa-text);
+	font: inherit;
+	outline: none;
+	transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.wpa-field__control:focus {
+	border-color: var(--wpa-blue);
+	box-shadow: 0 0 0 3px rgba(51, 144, 236, 0.16);
+}
+
+.wpa-btn-primary {
+	height: 46px;
+	margin-top: 4px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--wpa-blue);
+	color: #fff;
+	font: inherit;
+	font-size: 15px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.wpa-btn-primary:hover { background: var(--wpa-blue-deep); }
+
+.wpa-saved-models {
+	list-style: none;
+	margin: 12px 0 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.wpa-saved-models__group {
+	list-style: none;
+	margin: 10px 0 0;
+	padding: 4px 2px 0;
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--wpa-text-muted, #6a737a);
+	background: transparent;
+	box-shadow: none;
+}
+
+.wpa-saved-models li {
+	padding: 12px 14px;
+	border-radius: 12px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(16, 35, 47, 0.08);
+	font-size: 14px;
+}
+
+.wpa-saved-models__group + .wpa-saved-models__item {
+	margin-top: 0;
+}
+
+.wpa-saved-models strong { display: block; margin-bottom: 2px; }
+.wpa-saved-models span { color: var(--wpa-text-muted); font-size: 12px; }
+
+@keyframes wpa-page-in {
+	from { opacity: 0; transform: translateX(-12px); }
+	to { opacity: 1; transform: translateX(0); }
+}
+
+.wpa-typing {
+	display: inline-flex;
+	gap: 4px;
+	padding: 4px 2px 8px;
+}
+
+.wpa-typing span {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #9aa3ab;
+	animation: wpa-dot 1.1s infinite ease-in-out;
+}
+
+.wpa-typing span:nth-child(2) { animation-delay: 0.15s; }
+.wpa-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+.wpa-bubble--typing {
+	min-width: 168px;
+}
+.wpa-typing__status {
+	font-size: 12px;
+	color: var(--wpa-text-muted);
+	margin-top: 2px;
+}
+
+@keyframes wpa-bubble-in {
+	from { opacity: 0; transform: translateY(8px) scale(0.96); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes wpa-fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes wpa-pop {
+	from { opacity: 0; transform: translateY(6px) scale(0.96); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes wpa-slide-in {
+	from { transform: translateX(24px); opacity: 0.6; }
+	to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes wpa-dot {
+	0%, 80%, 100% { transform: translateY(0); opacity: 0.45; }
+	40% { transform: translateY(-3px); opacity: 1; }
+}
+
+@media (max-width: 900px) {
+	.wpa-sidebar,
+	.wpa-main {
+		width: 100%;
+		min-width: 0;
+		max-width: none;
+		border: 0;
+	}
+
+	.wpa-app[data-view="chat"] .wpa-sidebar { display: none; }
+	.wpa-app[data-view="list"] .wpa-main { display: none; }
+	.wpa-app[data-view="tools"] .wpa-sidebar { display: none; }
+
+	.wpa-back {
+		display: inline-flex;
+		flex: 0 0 auto;
+		color: var(--wpa-blue);
+	}
+
+	.wpa-bubble { max-width: min(88%, 520px); }
+
+	.wpa-composer {
+		padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+		gap: 6px;
+	}
+
+	.wpa-composer__shell {
+		min-height: 42px;
+		padding: 8px 14px;
+		border-radius: 20px;
+	}
+
+	.wpa-send { width: 44px; height: 44px; }
+
+	.wpa-model-btn { max-width: 100px; }
+	.wpa-settings__panel { width: 100%; }
+	.wpa-fab { left: 16px; bottom: 16px; }
+}
