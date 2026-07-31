@@ -1,0 +1,15 @@
+/**
+ * IRANSans — کپی محلی افزونه، با fallback به persian-woocommerce.
+ */
+@font-face {
+	font-family: IRANSans;
+	src:
+		url("../fonts/iransans/iransans.woff2") format("woff2-variations"),
+		url("../fonts/iransans/iransans.woff2") format("woff2 supports variations"),
+		url("../fonts/iransans/iransans.woff2") format("woff2"),
+		url("../../../persian-woocommerce/assets/fonts/iransans/iransans.woff2") format("woff2-variations"),
+		url("../../../persian-woocommerce/assets/fonts/iransans/iransans.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}

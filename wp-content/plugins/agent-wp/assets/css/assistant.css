@@ -1,0 +1,617 @@
+/**
+ * دستیار شناور — مشاور حرفه‌ای، خلاصه‌محور (نه داشبورد داده).
+ */
+
+.wpa-as,
+.wpa-as * {
+	box-sizing: border-box;
+	font-family: IRANSans, Tahoma, sans-serif !important;
+}
+
+.wpa-as {
+	position: fixed;
+	inset: auto auto 20px 20px;
+	z-index: 99999;
+	direction: rtl;
+}
+
+.wpa-as.wpa-as--right {
+	inset: auto 20px 20px auto;
+}
+
+.wpa-as.wpa-as--admin {
+	z-index: 100100;
+	bottom: 28px;
+}
+
+.wpa-as[hidden] { display: none !important; }
+
+.wpa-as__fab {
+	width: 58px;
+	height: 58px;
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+	color: #fff;
+	background: linear-gradient(160deg, #1e3a4c 0%, #2a6f8f 55%, #3a8fb5 100%);
+	box-shadow: 0 12px 28px rgba(30, 58, 76, 0.35);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.wpa-as__fab:hover {
+	transform: scale(1.04);
+	box-shadow: 0 14px 32px rgba(30, 58, 76, 0.45);
+}
+
+.wpa-as__fab.is-open {
+	background: #5c6b73;
+}
+
+.wpa-as__fab.is-pulse {
+	animation: wpa-as-pulse-new 1.6s ease-out 2;
+}
+
+.wpa-as__badge {
+	position: absolute;
+	top: -2px;
+	left: -2px;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 6px;
+	border-radius: 10px;
+	background: #c45c4a;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 2px solid #fff;
+}
+
+.wpa-as__badge[hidden] { display: none !important; }
+
+.wpa-as__panel {
+	position: absolute;
+	bottom: 76px;
+	left: 0;
+	width: min(380px, calc(100vw - 28px));
+	height: min(560px, calc(100vh - 110px));
+	border-radius: 16px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	background: #f7f6f3;
+	box-shadow: 0 20px 48px rgba(20, 30, 40, 0.22);
+	transform-origin: bottom left;
+	animation: wpa-as-pop 200ms ease-out;
+}
+
+.wpa-as.wpa-as--right .wpa-as__panel {
+	left: auto;
+	right: 0;
+	transform-origin: bottom right;
+}
+
+.wpa-as__panel[hidden] { display: none !important; }
+
+.wpa-as__head {
+	padding: 18px 16px 14px;
+	background: linear-gradient(165deg, #16232e 0%, #1c3344 100%);
+	color: #fff;
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.wpa-as__head-main {
+	min-width: 0;
+}
+
+.wpa-as__head-actions {
+	display: flex;
+	gap: 4px;
+	flex-shrink: 0;
+}
+
+.wpa-as__icon-btn {
+	width: 32px;
+	height: 32px;
+	border: 0;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.1);
+	color: #fff;
+	cursor: pointer;
+	font-size: 14px;
+	line-height: 1;
+}
+
+.wpa-as__icon-btn:hover {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.wpa-as__toast {
+	position: fixed;
+	bottom: 92px;
+	left: 20px;
+	max-width: min(320px, calc(100vw - 40px));
+	padding: 10px 14px;
+	border-radius: 10px;
+	background: #16232e;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 600;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+	z-index: 100000;
+	animation: wpa-as-in 160ms ease-out;
+	white-space: normal;
+}
+
+.wpa-as.is-minimized .wpa-as__panel {
+	height: 72px !important;
+	overflow: hidden;
+}
+
+.wpa-as.is-minimized .wpa-as__tabs,
+.wpa-as.is-minimized .wpa-as__body,
+.wpa-as.is-minimized .wpa-as__composer {
+	display: none !important;
+}
+
+.wpa-as.wpa-as--right .wpa-as__toast {
+	left: auto;
+	right: 20px;
+}
+
+.wpa-as__brand {
+	font-size: 20px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	line-height: 1.2;
+	margin: 0 0 2px;
+}
+
+.wpa-as__tagline {
+	margin: 0 0 8px;
+	font-size: 12px;
+	opacity: 0.72;
+	font-weight: 500;
+}
+
+.wpa-as__status {
+	font-size: 11px;
+	opacity: 0.8;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.wpa-as__dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #6db58a;
+	animation: wpa-as-pulse 2.4s infinite;
+}
+
+.wpa-as__tabs {
+	display: flex;
+	gap: 0;
+	padding: 0;
+	background: #eceae4;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.wpa-as__tab {
+	flex: 1;
+	border: 0;
+	background: transparent;
+	padding: 12px 8px;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	color: #6a737a;
+	cursor: pointer;
+}
+
+.wpa-as__tab.is-active {
+	background: #f7f6f3;
+	color: #1c3344;
+	box-shadow: inset 0 -2px 0 #3a8fb5;
+}
+
+.wpa-as__body {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	background: #f7f6f3;
+}
+
+.wpa-as__pane {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	padding: 14px 14px 10px;
+}
+
+.wpa-as__pane[hidden] { display: none !important; }
+
+.wpa-as__brief {
+	margin-bottom: 12px;
+}
+
+.wpa-as__brief-head {
+	margin: 0 0 6px;
+	font-size: 15px;
+	font-weight: 700;
+	color: #1a242c;
+	line-height: 1.45;
+}
+
+.wpa-as__brief-note {
+	margin: 0 0 12px;
+	font-size: 12.5px;
+	color: #5c6b73;
+	line-height: 1.5;
+}
+
+.wpa-as__brief-tip {
+	margin: 12px 0 0;
+	padding: 10px 12px;
+	font-size: 12.5px;
+	line-height: 1.45;
+	color: #1c3344;
+	background: rgba(58, 143, 181, 0.1);
+	border-radius: 10px;
+	border-right: 3px solid #3a8fb5;
+}
+
+.wpa-as__page-head {
+	margin: 0 0 8px;
+}
+
+.wpa-as__page-label {
+	margin: 0 0 8px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	color: #0f766e;
+	text-transform: none;
+}
+
+.wpa-as__card--page {
+	border-right: 3px solid #0d9488;
+	background: linear-gradient(180deg, rgba(13, 148, 136, 0.06), #fff 40%);
+	margin-bottom: 8px;
+}
+
+.wpa-as__cat {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: auto auto;
+	gap: 2px 10px;
+	text-align: right;
+	border: 0;
+	background: #fff;
+	border-radius: 12px;
+	padding: 12px 14px;
+	margin-bottom: 8px;
+	cursor: pointer;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+	transition: background 140ms ease;
+	font: inherit;
+}
+
+.wpa-as__cat:hover {
+	box-shadow: 0 0 0 1px rgba(58, 143, 181, 0.35);
+}
+
+.wpa-as__cat-label {
+	font-size: 14px;
+	font-weight: 700;
+	color: #1a242c;
+	grid-column: 1;
+	grid-row: 1;
+}
+
+.wpa-as__cat-meta {
+	font-size: 12px;
+	font-weight: 700;
+	color: #3a8fb5;
+	grid-column: 2;
+	grid-row: 1;
+	align-self: center;
+}
+
+.wpa-as__cat-hint {
+	grid-column: 1 / -1;
+	grid-row: 2;
+	font-size: 12px;
+	color: #6a737a;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: right;
+}
+
+.wpa-as__back {
+	border: 0;
+	background: transparent;
+	color: #3a8fb5;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	padding: 0 0 10px;
+}
+
+.wpa-as__msg {
+	max-width: 88%;
+	margin: 0 0 10px;
+	padding: 9px 12px 7px;
+	border-radius: 14px 14px 4px 14px;
+	background: #fff;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+	font-size: 13.5px;
+	line-height: 1.5;
+	color: #222;
+	white-space: pre-wrap;
+	animation: wpa-as-in 180ms ease-out;
+}
+
+.wpa-as__msg.is-me {
+	margin-right: auto;
+	margin-left: 0;
+	background: #e8f2f6;
+	border-radius: 14px 14px 14px 4px;
+}
+
+.wpa-as__msg-meta {
+	display: block;
+	margin-top: 4px;
+	font-size: 10px;
+	color: #8a9298;
+	text-align: left;
+}
+
+.wpa-as__composer {
+	display: flex;
+	align-items: flex-end;
+	gap: 8px;
+	padding: 10px 12px;
+	background: #eceae4;
+	border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.wpa-as__input {
+	flex: 1;
+	min-height: 40px;
+	max-height: 110px;
+	resize: none;
+	border: 0;
+	border-radius: 12px;
+	padding: 10px 14px;
+	font: inherit;
+	font-size: 14px;
+	background: #fff;
+}
+
+.wpa-as__input:focus {
+	outline: 2px solid rgba(58, 143, 181, 0.35);
+}
+
+.wpa-as__send {
+	width: 40px;
+	height: 40px;
+	border: 0;
+	border-radius: 50%;
+	background: #1c3344;
+	color: #fff;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.wpa-as__send:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+.wpa-as__card {
+	background: #fff;
+	border-radius: 12px;
+	padding: 12px 12px 10px;
+	margin-bottom: 8px;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+	animation: wpa-as-in 200ms ease-out;
+}
+
+.wpa-as__card.is-open {
+	box-shadow: 0 0 0 1px rgba(58, 143, 181, 0.35);
+}
+
+.wpa-as__card-cat {
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 700;
+	color: #3a8fb5;
+	margin-bottom: 4px;
+}
+
+.wpa-as__card-title {
+	font-size: 13.5px;
+	font-weight: 700;
+	margin: 0 0 6px;
+	color: #1a242c;
+	line-height: 1.4;
+}
+
+.wpa-as__card-body {
+	font-size: 12.5px;
+	line-height: 1.5;
+	color: #5c6b73;
+	margin: 0 0 10px;
+}
+
+.wpa-as__card-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.wpa-as__chip {
+	border: 0;
+	border-radius: 8px;
+	padding: 6px 10px;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	background: rgba(22, 35, 46, 0.06);
+	color: #2a343c;
+	text-decoration: none;
+}
+
+.wpa-as__chip--primary {
+	background: #1c3344;
+	color: #fff;
+}
+
+.wpa-as__chip.is-active {
+	background: #1c3344;
+	color: #fff;
+}
+
+.wpa-as__card.is-done,
+.wpa-as__card.is-dismissed {
+	opacity: 0.7;
+}
+
+.wpa-as__toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	padding: 0 0 12px;
+}
+
+.wpa-as__typing {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 10px 14px;
+	margin: 4px 0 8px;
+	border-radius: 14px 14px 14px 4px;
+	background: #fff;
+	width: fit-content;
+}
+
+.wpa-as__typing span {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #8a9298;
+	animation: wpa-as-dot 1.2s ease-in-out infinite;
+}
+
+.wpa-as__typing span:nth-child(2) { animation-delay: 0.15s; }
+.wpa-as__typing span:nth-child(3) { animation-delay: 0.3s; }
+
+.wpa-as__tool {
+	margin: 6px 0 10px;
+	padding: 10px;
+	border-radius: 12px;
+	background: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.05);
+	font-size: 12px;
+}
+
+.wpa-as__tool-head {
+	display: flex;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 6px;
+	font-size: 12px;
+}
+
+.wpa-as__tool-st.is-ok { color: #2e7d32; font-weight: 700; }
+.wpa-as__tool-st.is-fail { color: #c62828; font-weight: 700; }
+.wpa-as__tool-st.is-wait { color: #c45c4a; font-weight: 700; }
+
+.wpa-as__tool-body {
+	color: #5c6b73;
+	white-space: pre-wrap;
+	line-height: 1.4;
+}
+
+.wpa-as__tool-warn {
+	margin-top: 6px;
+	padding: 8px 10px;
+	border-radius: 8px;
+	background: rgba(196, 92, 74, 0.12);
+	color: #8a3a2e;
+	font-size: 12px;
+	line-height: 1.45;
+	border-right: 3px solid #c45c4a;
+}
+
+.wpa-as__tool-actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 8px;
+}
+
+.wpa-as__empty {
+	text-align: center;
+	padding: 28px 16px;
+	color: #6a737a;
+	font-size: 13px;
+}
+
+@keyframes wpa-as-pulse-new {
+	0% { box-shadow: 0 0 0 0 rgba(58, 143, 181, 0.55); transform: scale(1); }
+	40% { box-shadow: 0 0 0 12px rgba(58, 143, 181, 0); transform: scale(1.06); }
+	100% { box-shadow: 0 0 0 0 rgba(58, 143, 181, 0); transform: scale(1); }
+}
+
+@keyframes wpa-as-dot {
+	0%, 80%, 100% { opacity: 0.35; transform: translateY(0); }
+	40% { opacity: 1; transform: translateY(-3px); }
+}
+
+@keyframes wpa-as-pulse {
+	0% { box-shadow: 0 0 0 0 rgba(109, 181, 138, 0.5); }
+	70% { box-shadow: 0 0 0 7px rgba(109, 181, 138, 0); }
+	100% { box-shadow: 0 0 0 0 rgba(109, 181, 138, 0); }
+}
+
+@keyframes wpa-as-pop {
+	from { opacity: 0; transform: translateY(10px) scale(0.96); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes wpa-as-in {
+	from { opacity: 0; transform: translateY(6px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+	.wpa-as {
+		inset: auto auto 12px 12px;
+	}
+	.wpa-as.wpa-as--right {
+		inset: auto 12px 12px auto;
+	}
+	.wpa-as__panel {
+		width: calc(100vw - 24px);
+		height: min(70vh, 560px);
+	}
+}
